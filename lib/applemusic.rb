@@ -16,7 +16,7 @@ module NowPlaying
       p uri
       uri = 'https://api.music.apple.com/v1/catalog/us/search?term=james+brown&limit=2&types=artists,albums'
 
-      res = Net::HTTP.get()
+      res = Net::HTTP.get(URI.parse(uri))
       p res
       return JSON.parse(res)
     end

@@ -21,7 +21,7 @@ module NowPlaying
     end
     
     def tweet(name: '', artist: '', album: '', image: '')
-      track = name + ' - ' + artist + ' / ' + album + ' #かすぷれいんぐ'
+      track = name + ' - ' + artist + "\n /" + album + "\n #かすぷれいんぐ"
       text = "てす\n" + track
       return with_image image, text unless image.empty?
       params = URI.encode_www_form(
@@ -33,7 +33,7 @@ module NowPlaying
     def with_image(image,text)
       pic = upload image
       params = URI.encode_www_form(
-        status: text + track,
+        status: text,
         media_ids: pic['media_id'].to_s
       )
       return @twitter.post UPDATE_URI + params 
