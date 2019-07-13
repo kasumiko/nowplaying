@@ -1,5 +1,6 @@
 require_relative './lib/twitter.rb'
 require_relative './lib/itunes.rb'
+require_relative './lib/itunesstore.rb'
 
 module NowPlaying
   class Main
@@ -15,6 +16,8 @@ module NowPlaying
     def find_artwork
       srcs = [
         ITunes
+        ITunesStore
+        MusicBrainz
       ]
       srcs.each{|src|
         art_work = src.get_art_work @track

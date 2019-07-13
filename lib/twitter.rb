@@ -1,6 +1,7 @@
 require 'oauth'
 require 'dotenv/load'
 require 'json'
+require 'base64'
 
 module NowPlaying
   class Twitter
@@ -22,7 +23,7 @@ module NowPlaying
     
     def tweet(name: '', artist: '', album: '', image: '')
       track = name + ' - ' + artist + "\n /" + album + "\n #かすぷれいんぐ"
-      text = "てす\n" + track
+      text = gets + track
       return with_image image, text unless image.empty?
       params = URI.encode_www_form(
         status: text
