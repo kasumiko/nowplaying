@@ -21,6 +21,6 @@ Execute `bundle install`.
 If it fail, execute `rm Gemfile.lock` and retry.
 
 ## Usage
-Execute `bundle exec ruby nowplaying.rb`.
+Execute `bundle exec ruby nowplaying.rb`,
 
-And input text what you want to tweet with the track infomations.
+and input text what you want to tweet with the track infomations.
