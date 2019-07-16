@@ -7,6 +7,7 @@ module NowPlaying
     SEARCH_URI = 'https://musicbrainz.org/ws/2/release-group/'
     class << self
       def get_art_work(name: '', artist: '', album: '')
+        return unless ENV['MUSICBRAINZ_SEARCH'] == 'enable'
         search_res = search(artist: artist, album: album)
         return if search_res.nil?
         return get_image search_res, artist
@@ -44,9 +45,8 @@ module NowPlaying
           query: "release-group:#{album} #{artist}",
           fmt: 'json'
         }
-        client = RestClient
         @uri = SEARCH_URI
-        res = client.get(@uri, params: params)
+        res = RestClient.get(@uri, params: params)
         return JSON.parse(res.body)
       end
     end

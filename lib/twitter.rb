@@ -1,5 +1,4 @@
 require 'oauth'
-require 'dotenv/load'
 require 'json'
 require 'base64'
 
@@ -10,19 +9,24 @@ module NowPlaying
 
     def initialize
       consumer = OAuth::Consumer.new(
-        ENV['API_KEY'],
-        ENV['API_SECRET'],
+        ENV['TWITTER_API_KEY'],
+        ENV['TWITTER_API_SECRET'],
         site: 'https://api.twitter.com/'
       )
       @twitter = OAuth::AccessToken.new(
         consumer,
-        ENV['ACCESS_TOKEN'],
-        ENV['ACCESS_TOKEN_SECRET']
+        ENV['TWITTER_ACCESS_TOKEN'],
+        ENV['TWITTER_ACCESS_TOKEN_SECRET']
       )
     end
     
     def tweet(name: '', artist: '', album: '', image: '')
-      track = name + ' - ' + artist + "\n /" + album + "\n #かすぷれいんぐ"
+      track = format ENV['FORMAT'] ,{
+        name: name,
+        album: album,
+        artist: artist,
+        tag: '#' + ENV['TAG']
+      }
       text = gets + track
       return with_image image, text unless image.empty?
       params = URI.encode_www_form(

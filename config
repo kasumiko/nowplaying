@@ -1,0 +1,32 @@
+#--------Your Twitter OAuth keys--------
+# Required!
+TWITTER_API_KEY = 
+TWITTER_API_SECRET = 
+TWITTER_ACCESS_TOKEN = 
+TWITTER_ACCESS_TOKEN_SECRET =
+# Required!
+
+#--------Format of your tweet-----------
+FORMAT = "%{name} - %{artist}\n/ %{album} \n%{tag}"
+
+#name - name of the track
+#artist - artist of the track
+#album - album of the track
+#tag - your nowplaying tag  
+
+#--------Tag of your nowplaying---------
+TAG = nowplaying
+
+#--------Your Spotify OAuth keys--------
+# Without these values, Spotify search aren't done. 
+
+SPOTIFY_ID = 
+SPOTIFY_SECRET = 
+
+#--------Activate Additional Searches---
+# They are unabled due to instability.
+# If you use these searches,
+# rewrite the values to enable
+
+SPOTIFY_SEARCH = unable
+MUSICBRAINZ_SEARCH = unable

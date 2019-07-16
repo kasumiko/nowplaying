@@ -8,6 +8,8 @@ module NowPlaying
     AUTH_URI = 'https://accounts.spotify.com/api/token'
     class << self
       def get_art_work(name: '', artist: '', album: '')
+        return unless ENV['SPOTIFY_SEARCH'] == 'enable'
+        return if ENV['SPOTIFY_ID'].empty?||ENV['SPOTIFY_SECRET'].empty?
         search_res = search 'album:' + album + ' artist:' + artist
         return if search_res['albums']['total'].zero?
         pic_url = search_res['albums']['items'][0]['images'][0]['url']
@@ -32,3 +34,4 @@ module NowPlaying
     end
   end
 end
+
