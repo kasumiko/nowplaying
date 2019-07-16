@@ -3,3 +3,4 @@ test*
 .rubocop.yml
 .ruby-version
 auth.rb
+config

@@ -25,8 +25,10 @@ module NowPlaying
               if exists artwork 1 then
                 try
                   set d to raw data of artwork 1
-                on error -1728 then
-                  return ""
+                on error message number n
+                  if n = -1728 then
+                    return ""
+                  end if
                 end try
                 return d
               end if
@@ -34,7 +36,7 @@ module NowPlaying
           end tell
         SCRIPT
         art_work = `osascript <<XXX\n#{src}`
-        return if art_work == ''
+        return if art_work == "\n"
         art_work = art_work.gsub('«data tdta', '').gsub('»', '')
         return [art_work.chomp].pack('H*')
       end
