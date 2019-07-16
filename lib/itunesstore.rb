@@ -13,7 +13,7 @@ module NowPlaying
 
       def get_image(search_res)
         search_res.each { |r|
-          pic = RestClient.get(r['artworkUrl100']).body
+          pic = RestClient.get(r['artworkUrl100'].sub('100x100bb','100000x100000-999')).body
           return pic unless pic.nil?
         }
         return nil

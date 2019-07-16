@@ -1,7 +1,6 @@
 require 'rest-client'
 require 'base64'
 require 'json'
-require 'dotenv/load'
 
 module NowPlaying
   class Spotify

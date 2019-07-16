@@ -4,7 +4,8 @@ require_relative './lib/itunes.rb'
 require_relative './lib/itunesstore.rb'
 require_relative './lib/music_brainz.rb'
 require_relative './lib/spotify.rb'
-Dotenv.load File.expand_path(__FILE__).sub(%r{[^\/]+$}, '')
+Dotenv.load File.expand_path(__FILE__).sub(%r{[^\/]+$}, '') + '.env'
+
 module NowPlaying
   class Main
     def initialize
