@@ -23,12 +23,11 @@ module NowPlaying
           tell application "iTunes"
             tell current track
               if exists artwork 1 then
-                set d to raw data of artwork 1
-                set filepath to ((path to desktop) as text) & ".hoge.png"
-                set b to open for access file filepath with write permission
-                set eof b to 0
-                write d to b starting at 0
-                close access b
+                try
+                  set d to raw data of artwork 1
+                on error -1728 then
+                  return ""
+                end try
                 return d
               end if
             end tell
