@@ -1,52 +1,54 @@
 require 'open-uri'
 require 'json'
-require 'net/http'
+require 'rest-client'
 
 module NowPlaying
   class MusicBrainz
-    SEARCH_URI = 'https://musicbrainz.org/ws/2/release/?'
+    SEARCH_URI = 'https://musicbrainz.org/ws/2/release-group/'
     class << self
-      def get_art_work(name:'', artist:'', album:'')
-        search_res = search(artist: artist,album: album)
+      def get_art_work(name: '', artist: '', album: '')
+        search_res = search(artist: artist, album: album)
         return if search_res.nil?
         return get_image search_res, artist
       end
 
-      def get_mbid(search_res,artist)
-        search_res['releases'].each{|r|
-          return r['id'] if r['artist-credit'][0]['artist']['name'] == artist
+      def get_mbid(search_res, artist)
+        search_res['release-groups'].each { |r|
+          next unless r['artist-credit'][0]['artist']['name'] == artist
+          mbids = []
+          mbids << [r['id'], 'release-group']
+          r['releases'].each { |r|
+            mbids << [r['id'], 'release']
+          }
+          return mbids
         }
+        return []
       end
 
       def get_image(search_res, artist)
-        mbid = get_mbid search_res, artist
-        res = Net::HTTP.get URI.parse "https://coverartarchive.org/release/#{mbid}/front"
-        image = res.gsub('See: ','').chomp
-        return open(image).read
+        mbids = get_mbid search_res, artist
+        return if mbids.empty?
+        mbids.each { |id|
+          begin
+            res = RestClient.get("https://coverartarchive.org/#{id[1]}/#{id[0]}/front")
+            return res.body
+          rescue RestClient::NotFound => e
+            e.message
+            next
+          end
+        }
       end
 
-      def user_agent
-        request = Net::HTTP::Get.new(@uri.request_uri)
-        request["User-Agent"] = "kasuplaying"
-        return request
-      end
-
-      def http_secure
-        http = Net::HTTP.new(@uri.host, @uri.port)
-        http.use_ssl = true
-        return http
-      end
-
-      def search(album:'',artist:'')
-        param = URI.encode_www_form({
-          query: "release:#{album}",
+      def search(album: '', artist: '')
+        params = {
+          query: "release-group:#{album} #{artist}",
           fmt: 'json'
-        })
-        @uri = URI.parse SEARCH_URI+param
-        res = http_secure.request(user_agent)
+        }
+        client = RestClient
+        @uri = SEARCH_URI
+        res = client.get(@uri, params: params)
         return JSON.parse(res.body)
       end
     end
   end
 end
-

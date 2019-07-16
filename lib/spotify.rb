@@ -1,33 +1,34 @@
-require 'net/http'
+require 'rest-client'
+require 'base64'
 require 'json'
 require 'dotenv/load'
 
 module NowPlaying
   class Spotify
     SEARCH_URI = 'https://api.spotify.com/v1/search?'
+    AUTH_URI = 'https://accounts.spotify.com/api/token'
     class << self
-      def get_art_work(name:'', artist:'', album:'')
-        search_res = search name + '+' + artist + '+' + album
+      def get_art_work(name: '', artist: '', album: '')
+        search_res = search 'album:' + album + ' artist:' + artist
+        return if search_res['albums']['total'].zero?
+        pic_url = search_res['albums']['items'][0]['images'][0]['url']
+        return RestClient.get pic_url
       end
 
       def auth
-        request = Net::HTTP::Get.new(@uri.request_uri)
-        request["Authorization"] = "Bearer #{ENV['SPOTIFY_TOKEN']}"
-        p request["Authorization"]
-        return request
-      end
-
-      def http_secure
-        http = Net::HTTP.new(@uri.host, @uri.port)
-        http.use_ssl = true
-        return http
+        consumer_key = CGI.escape(ENV['SPOTIFY_ID'])
+        consumer_secret = CGI.escape(ENV['SPOTIFY_SECRET'])
+        credential = Base64.strict_encode64(consumer_key + ':' + consumer_secret)
+        params = { grant_type: 'client_credentials' }
+        res = RestClient.post(AUTH_URI, params, Authorization: "Basic #{credential}")
+        token = JSON.parse(res.body)['access_token']
+        return "Bearer #{token}"
       end
 
       def search(str)
-        body = URI.encode_www_form(q: str,type: 'track')
-        @uri = URI.parse(SEARCH_URI+body)
-        p @uri
-        p http_secure.request(auth)
+        params = { q: str, type: 'album' }
+        res = RestClient.get(SEARCH_URI, params: params, Authorization: auth)
+        return JSON.parse(res.body)
       end
     end
   end

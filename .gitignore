@@ -1,2 +1,5 @@
 .env
 test*
+.rubocop.yml
+.ruby-version
+auth.rb

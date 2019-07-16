@@ -1,31 +1,29 @@
 require 'open-uri'
+require 'rest-client'
 require 'json'
-require 'net/http'
 
 module NowPlaying
   class ITunesStore
-    SEARCH_URI = 'https://itunes.apple.com/search?'
+    SEARCH_URI = 'https://itunes.apple.com/search'
     class << self
-      def get_art_work(name:'', artist:'', album:'')
+      def get_art_work(name: '', artist: '', album: '')
         search_res = search name + '+' + artist + '+' + album
         return get_image search_res
       end
 
       def get_image(search_res)
-        search_res.each{|r|
-          pic = open(r['artworkUrl100']).read
-          return pic if pic != nil
+        search_res.each { |r|
+          pic = RestClient.get(r['artworkUrl100']).body
+          return pic unless pic.nil?
         }
         return nil
       end
 
       def search(str)
-        param = URI.encode_www_form({term: str, country: 'jp',media: 'music'})
-        uri = URI.parse SEARCH_URI+param
-        res = Net::HTTP.get uri
-        return JSON.parse(res)['results']
+        params = { term: str, country: 'jp', media: 'music' }
+        res = RestClient.get(SEARCH_URI, params: params)
+        return JSON.parse(res.body)['results']
       end
     end
   end
 end
-

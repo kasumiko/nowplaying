@@ -7,7 +7,7 @@ module NowPlaying
             set trackname to name of current track
             set trackartist to artist of current track
             set albumname to album of current track
-            return trackname & "\n" & trackartist & "\n" & albumname 
+            return trackname & "\n" & trackartist & "\n" & albumname
           end tell
         SCRIPT
         track = `osascript <<XXX\n#{src}`.split("\n")
@@ -18,7 +18,7 @@ module NowPlaying
         }
       end
 
-      def get_art_work(*arg)
+      def get_art_work(*)
         src = <<~SCRIPT
           tell application "iTunes"
             tell current track
@@ -36,10 +36,9 @@ module NowPlaying
         SCRIPT
         art_work = `osascript <<XXX\n#{src}`
         return if art_work == ''
-        art_work = art_work.gsub("«data tdta","").gsub("»","")
-        return [art_work.chomp].pack("H*")
+        art_work = art_work.gsub('«data tdta', '').gsub('»', '')
+        return [art_work.chomp].pack('H*')
       end
     end
   end
 end
-
